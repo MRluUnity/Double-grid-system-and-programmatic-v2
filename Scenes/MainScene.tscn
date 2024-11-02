@@ -1,0 +1,176 @@
+[gd_scene load_steps=19 format=3 uid="uid://c5ls7dpx7j1i8"]
+
+[ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
+[ext_resource type="Script" path="res://Scenes/tile_map_layer_group.gd" id="1_w44ih"]
+[ext_resource type="Script" path="res://Scenes/world_tile_map.gd" id="2_m3rb1"]
+[ext_resource type="Script" path="res://Scenes/player.gd" id="4_12mf3"]
+[ext_resource type="Script" path="res://Scripts/camera.gd" id="4_54t16"]
+[ext_resource type="Script" path="res://Scenes/cursor.gd" id="5_kge31"]
+[ext_resource type="Shader" path="res://Shaders/grid_line.gdshader" id="6_d7vgn"]
+[ext_resource type="Texture2D" uid="uid://cuc2ye0p27lv4" path="res://Assets/Grass (2).png" id="6_r2nlo"]
+[ext_resource type="Texture2D" uid="uid://b7hi8tufrwmb1" path="res://Assets/icon.png" id="8_rjqge"]
+[ext_resource type="Texture2D" uid="uid://diqe0iyepv7wm" path="res://Assets/Checked.png" id="9_etm7v"]
+[ext_resource type="Texture2D" uid="uid://cx24tg58etx4e" path="res://Assets/Unchecked.png" id="10_iatsy"]
+[ext_resource type="Script" path="res://Scenes/check_button.gd" id="11_7tcml"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ybmre"]
+size = Vector2(149, 82)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2qox6"]
+atlas = ExtResource("8_rjqge")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_caus5"]
+atlas = ExtResource("8_rjqge")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mv6ow"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2qox6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_caus5")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nuwk5"]
+shader = ExtResource("6_d7vgn")
+shader_parameter/gridSize = 256.0
+shader_parameter/gridWidth = 5.0
+shader_parameter/colorLine = Color(0.403922, 0.647059, 0.717647, 0.427451)
+
+[sub_resource type="LabelSettings" id="LabelSettings_up8gg"]
+font_size = 48
+
+[node name="Node2D" type="Node2D"]
+
+[node name="TileMapLayerGroup" type="Node2D" parent="."]
+script = ExtResource("1_w44ih")
+block_size = 16
+load_range_radius = 2
+
+[node name="WorldTileMapLayer" type="TileMapLayer" parent="TileMapLayerGroup"]
+use_parent_material = true
+position = Vector2(1, 0)
+tile_set = ExtResource("1_0ynk6")
+script = ExtResource("2_m3rb1")
+drit_atlas_coord = Vector2i(1, 0)
+water_atlas_coord = Vector2i(2, 0)
+sand_atlas_coord = Vector2i(3, 0)
+prop_id = 1
+grass_id = 2
+drit_id = 5
+sand_id = 3
+water_id = 4
+
+[node name="DisplayTileMapLayer3" type="TileMapLayer" parent="TileMapLayerGroup"]
+y_sort_enabled = true
+position = Vector2(128, 128)
+tile_set = ExtResource("1_0ynk6")
+
+[node name="DisplayTileMapLayer2" type="TileMapLayer" parent="TileMapLayerGroup"]
+y_sort_enabled = true
+position = Vector2(128, 128)
+tile_set = ExtResource("1_0ynk6")
+
+[node name="DisplayTileMapLayer4" type="TileMapLayer" parent="TileMapLayerGroup"]
+y_sort_enabled = true
+position = Vector2(128, 128)
+tile_set = ExtResource("1_0ynk6")
+
+[node name="DisplayTileMapLayer" type="TileMapLayer" parent="TileMapLayerGroup"]
+y_sort_enabled = true
+position = Vector2(128, 128)
+tile_set = ExtResource("1_0ynk6")
+
+[node name="PropTileMapLayer" type="TileMapLayer" parent="TileMapLayerGroup"]
+z_index = 1
+y_sort_enabled = true
+position = Vector2(256, 256)
+tile_set = ExtResource("1_0ynk6")
+y_sort_origin = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(1432, 552)
+collision_mask = 2
+script = ExtResource("4_12mf3")
+speed = 4000.0
+
+[node name="Camera" type="Camera2D" parent="Player"]
+zoom = Vector2(0.5, 0.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 2.0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+script = ExtResource("4_54t16")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture = ExtResource("6_r2nlo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(16.5, 31)
+shape = SubResource("RectangleShape2D_ybmre")
+
+[node name="Node2D" type="Node2D" parent="." node_paths=PackedStringArray("dualGridTilemap")]
+script = ExtResource("5_kge31")
+dualGridTilemap = NodePath("../TileMapLayerGroup/WorldTileMapLayer")
+
+[node name="Cursor" type="AnimatedSprite2D" parent="Node2D"]
+position = Vector2(128, 128)
+scale = Vector2(6, 6)
+sprite_frames = SubResource("SpriteFrames_mv6ow")
+animation = &"new_animation"
+autoplay = "new_animation"
+frame_progress = 0.514569
+
+[node name="GridLine" type="ColorRect" parent="Node2D"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_nuwk5")
+custom_minimum_size = Vector2(1344, 1344)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -672.0
+offset_top = -672.0
+offset_right = 672.0
+offset_bottom = 672.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CheckButton" type="CheckButton" parent="CanvasLayer"]
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 185.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 32
+theme_override_icons/checked = ExtResource("9_etm7v")
+theme_override_icons/unchecked = ExtResource("10_iatsy")
+text = "开启/关闭网格系统"
+script = ExtResource("11_7tcml")
+metadata/_edit_use_anchors_ = true
+
+[node name="FPSLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+grow_horizontal = 2
+text = "asdasd"
+label_settings = SubResource("LabelSettings_up8gg")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="toggled" from="CanvasLayer/CheckButton" to="CanvasLayer/CheckButton" method="_on_toggled"]

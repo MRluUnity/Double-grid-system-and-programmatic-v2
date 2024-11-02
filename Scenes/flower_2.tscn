@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbcr4sqqt0ayt"]
+
+[ext_resource type="Shader" path="res://Shaders/swing.gdshader" id="1_02660"]
+[ext_resource type="Texture2D" uid="uid://bemakke80e8aw" path="res://Assets/Flower2.png" id="2_o460k"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rm6w3"]
+shader = ExtResource("1_02660")
+shader_parameter/y_start = 0.0
+shader_parameter/speed = 2.5
+shader_parameter/range = 10.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f7oop"]
+radius = 30.2655
+
+[node name="Flower_2" type="StaticBody2D"]
+y_sort_enabled = true
+
+[node name="Flower" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_rm6w3")
+texture = ExtResource("2_o460k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-11, 63)
+shape = SubResource("CircleShape2D_f7oop")
